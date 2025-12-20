@@ -91,6 +91,7 @@ jobs:
           - chrome
           - edge
           - firefox
+          - safari
         os:
           - windows
           - macos
