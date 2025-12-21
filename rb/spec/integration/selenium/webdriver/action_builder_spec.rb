@@ -374,7 +374,7 @@ module Selenium
           }.to raise_error(Error::MoveTargetOutOfBoundsError)
         end
 
-        it 'scrolls by given amount with offset', except: {brower: %i[safari safari_preview]} do
+        it 'scrolls by given amount with offset', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
           scroll_origin = WheelActions::ScrollOrigin.viewport(10, 10)
 
