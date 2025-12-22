@@ -364,7 +364,8 @@ module Selenium
           expect(in_viewport?(checkbox)).to be true
         end
 
-        it 'raises MoveTargetOutOfBoundsError when origin offset from element is out of viewport' do
+        it 'raises MoveTargetOutOfBoundsError when origin offset from element is out of viewport',
+           except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, 50)
@@ -374,7 +375,7 @@ module Selenium
           }.to raise_error(Error::MoveTargetOutOfBoundsError)
         end
 
-        it 'scrolls by given amount with offset', except: {browser: %i[safari safari_preview]} do
+        it 'scrolls by given amount with offset' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
           scroll_origin = WheelActions::ScrollOrigin.viewport(10, 10)
 
