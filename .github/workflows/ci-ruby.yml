@@ -91,12 +91,14 @@ jobs:
           - chrome
           - edge
           - firefox
-          - safari
         os:
           - windows
           - macos
         exclude:
           - browser: edge
+            os: macos
+        include:
+          - browser: safari
             os: macos
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})

@@ -184,7 +184,7 @@ jobs:
         run: fsutil 8dot3name set 0
       - name: Setup Safari
         if: inputs.browser == 'safari'
-        run: safaridriver --enable
+        run: sudo safaridriver --enable
       - name: Run Bazel
         shell: bash
         env:
