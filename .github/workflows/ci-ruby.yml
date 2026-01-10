@@ -77,7 +77,6 @@ jobs:
         bazel test
         --keep_going
         --build_tests_only
-        --test_output=streamed
         --test_size_filters small
         //rb/spec/...
 
