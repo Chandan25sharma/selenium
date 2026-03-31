@@ -36,7 +36,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly ConcurrentDictionary<Task, byte> _runningHandlers = new();
 
-    private readonly Channel<EventItem> _pendingEvents = Channel.CreateUnbounded<EventItem>(new()
+    private readonly Channel<PendingEvent> _pendingEvents = Channel.CreateUnbounded<PendingEvent>(new()
     {
         SingleReader = true,
         SingleWriter = true
@@ -59,13 +59,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
         registration.AddHandler(eventHandler);
 
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
-        catch
-        {
-            registration.RemoveHandler(eventHandler);
-            throw;
-        }
+        return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
@@ -82,13 +76,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventArgs));
     }
 
-    private async Task ProcessEventsAsync()
+    private async Task ProcessEventsAwaiterAsync()
     {
         var reader = _pendingEvents.Reader;
-
         while (await reader.WaitToReadAsync().ConfigureAwait(false))
         {
-            while (reader.TryRead(out var evt))
+            while (reader.TryRead(out var result))
             {
                 if (_eventRegistrations.TryGetValue(result.Method, out var registration))
                 {
